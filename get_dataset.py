@@ -1,23 +1,28 @@
 import os
 import chess.pgn
 from state import State
+import numpy as np
 
 def get_dataset(num_samples=None):
    # Import data
    X, Y = [], []
    gn = 0
+   values = {"1/2-1/2":0, "0-1":-1, "1-0":1}
    for fn in os.listdir("data"):
       pgn = open(os.path.join("data", fn))
       while 1:
-         try:
-            game = chess.pgn.read_game(pgn)
-         except Exception:
-            break
-         value = {"1/2-1/2":0, "0-1":-1, "1-0":1}[game.headers["Result"]]
+         game = chess.pgn.read_game(pgn)
+         if game is None:
+            continue
+         res = game.headers["Result"]
+         if res not in values:
+            continue
+
+         value = values[res]
          board = game.board()
          for i, move in enumerate(game.mainline_moves()):
             board.push(move)
-            ser = State(board).serialize()[:, :, 0]
+            ser = State(board).serialize()
             X.append(ser)
             Y.append(value)
          print("Parsing game %d, got %d examples" % (gn, len(X)))
@@ -26,4 +31,5 @@ def get_dataset(num_samples=None):
          gn += 1
 
 if __name__ == "__main__":
-   X, Y = get_dataset(1000)
+   X, Y = get_dataset(10000000)
+   np.savez("proccessed/dataset_10M.npz", X, Y)

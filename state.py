@@ -1,5 +1,6 @@
 import chess
 import numpy as np
+from neural import Net
 
 class State(object):
     def __init__(self, board=None):
@@ -37,28 +38,22 @@ class State(object):
         bstate = bstate.reshape(8, 8)
 
         # Binary State
-        state = np.zeros((8,8,5), dtype=np.uint8)
+        state = np.zeros((5,8,8), dtype=np.uint8)
 
         # Column 0-3 to binary
-        state[:,:,0] = (bstate>>3)&1
-        state[:,:,0] = (bstate>>2)&1
-        state[:,:,0] = (bstate>>1)&1
-        state[:,:,0] = (bstate>>0)&1
+        state[0] = (bstate>>3)&1
+        state[1] = (bstate>>2)&1
+        state[2] = (bstate>>1)&1
+        state[3] = (bstate>>0)&1
 
         # 4th column is for whose turn it is
-        state[:,:,4] = (self.board.turn*1.0)
+        state[4] = (self.board.turn*1.0)
 
         return state
         
 
     def edges(self):
         return list(self.board.legal_moves)
-
-    def value(self):
-        # Neural Net goes here:
-        return 1
     
 if __name__ == "__main__":
     s = State()
-    # print(s.edges())
-    print(s.serialize())
