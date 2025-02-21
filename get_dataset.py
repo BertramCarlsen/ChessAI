@@ -13,7 +13,7 @@ def get_dataset(num_samples=None):
       while 1:
          game = chess.pgn.read_game(pgn)
          if game is None:
-            continue
+            break
          res = game.headers["Result"]
          if res not in values:
             continue
