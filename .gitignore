@@ -3,3 +3,7 @@
 data/
 proccessed/
 nets/
+processed/dataset_10M.npz
+processed/dataset_10k.npz
+processed/dataset_100k.npz
+nets/value.pth
