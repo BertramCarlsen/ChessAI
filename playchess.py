@@ -225,6 +225,10 @@ def move_coordinates():
 
     move = s.board.san(chess.Move(source, target, promotion=chess.QUEEN if promotion else None))
 
+    # Debugging steps
+    print("Current FEN:", s.board.fen())  
+    print("Legal moves:", [m.uci() for m in s.board.legal_moves])
+    print(f"Attempting move: {move.uci()}")
 
     if move is not None and move != "":
       print("human moves", move)
