@@ -42,7 +42,7 @@ def hello():
   ret += "<style>input { font-size: 30px; } button { font-size: 20px; }</style>"
   ret += "</head><body>"
   ret += "<img src='board.svg?%f' width='700' height='700' text-align='center'><img/><br>" % time.time()
-  ret += '<form action="/human"><input type="text"></input><input type="submit" value="Move"></form><br>'
+  ret += '<form action="/move"><input name="move" type="text"></input><input type="submit" value="Move"></input</form><br>'
   # ret += "<button onclick=\"$.post('/move', function() { location.reload(); });\">Make computer move</button>"
   return ret
 
