@@ -32,12 +32,6 @@ def explore_leaves(s, v):
 v = Valuator()
 s = State()
 
-def computer_move():
-  # Computer move
-  move = sorted(explore_leaves(s, v), key=lambda x: x[0], reverse=s.board.turn)[0]
-  print(move)
-  s.board.push(move[1])
-
 app = Flask(__name__)
 
 @app.route("/")
@@ -52,20 +46,27 @@ def hello():
   # ret += "<button onclick=\"$.post('/move', function() { location.reload(); });\">Make computer move</button>"
   return ret
 
+def computer_move():
+  # Computer move
+  move = sorted(explore_leaves(s, v), key=lambda x: x[0], reverse=s.board.turn)[0]
+  print(move)
+  s.board.push(move[1])
+
 @app.route("/board.svg")
 def board():
   return Response(chess.svg.board(board=s.board), mimetype="image/svg+xml")
 
-@app.route("/human")
+@app.route("/move")
 def move():
   if not s.board.is_game_over():
-    request
-
-@app.route("/move", methods=["POST"])
-def move():
-  computer_move()
-  return ""
-
+    move = request.args.get("move", default="")
+    if move is not None and move != "":
+      print("human moves", move)
+      s.board.push_san(move)
+      computer_move()
+    else:
+      print("Game is over")
+    return hello()
 
 
 if __name__ == "__main__":
