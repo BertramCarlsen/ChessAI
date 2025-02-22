@@ -32,23 +32,25 @@ def explore_leaves(s, v):
 v = Valuator()
 s = State()
 
+def to_svg(s):
+  return base64.b64encode(chess.svg.board(board=s.board).encode("utf-8")).decode("utf-8")
+
 app = Flask(__name__)
 
 @app.route("/")
 def hello():
-  board_svg = base64.b64encode(chess.svg.board(board=s.board).encode("utf-8")).decode("utf-8")
+  board_svg = to_svg(s)
   # Concatenating html lol
   ret = "<html><head>"
   ret += "<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js'></script>"
   ret += "<style>input { font-size: 30px; } button { font-size: 20px; }</style>"
   ret += "</head><body>"
   ret += "<img src='data:image/svg+xml;base64,%s' width='700' height='700' text-align='center'>" % board_svg
-
   ret += '<form action="/move"><input name="move" type="text"></input><input type="submit" value="Move"></form><br>'
   # ret += "<button onclick=\"$.post('/move', function() { location.reload(); });\">Make computer move</button>"
   return ret
 
-def computer_move():
+def computer_move(s, v):
   # Computer move
   move = sorted(explore_leaves(s, v), key=lambda x: x[0], reverse=s.board.turn)
   print("Top 3 moves:")
@@ -64,7 +66,7 @@ def move():
       print("human moves", move)
       try:
         s.board.push_san(move)
-        computer_move()
+        computer_move(s, v)
       except Exception:
         traceback.print_exc()
         print("Wrong move")
@@ -72,17 +74,16 @@ def move():
       print("Game is over")
     return hello()
 
+@app.route("/selfplay")
+def selfplay():
+  ret = "<html><head>"
+  s = State()
+  # Selfplay:
+  while not s.board.is_game_over():
+    computer_move(s, v)
+    ret += "<img src='data:image/svg+xml;base64,%s' width='700' height='700' text-align='center'>" % to_svg(s)
+  print(s.board.result())
+  return ret
 
 if __name__ == "__main__":
   app.run(debug=True)
-  """
-if __name__ == "__main__":
-  # Selfplay:
-  while not s.board.is_game_over():
-    l = sorted(explore_leaves(s, v), key=lambda x: x[0], reverse=s.board.turn)
-    move = l[0]
-    print(move)
-    s.board.push(move[1])
-  print(s.board.result())
-  """
-  
