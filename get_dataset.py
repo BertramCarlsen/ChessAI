@@ -5,8 +5,7 @@ import numpy as np
 
 def get_dataset(num_samples=None):
    # Import data
-   X = np.array[X]
-   Y = np.array[Y]
+   X,Y = [], []
    gn = 0
    values = {"1/2-1/2":0, "0-1":-1, "1-0":1}
    for fn in os.listdir("data"):
@@ -30,6 +29,8 @@ def get_dataset(num_samples=None):
          if num_samples is not None and len(X) > num_samples:
             return X,Y
          gn += 1
+   X = np.array(X)
+   Y = np.array(Y)
 
 if __name__ == "__main__":
    X, Y = get_dataset(25000000)

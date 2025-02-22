@@ -47,6 +47,8 @@ def hello():
   ret += "</head><body>"
   ret += "<img src='data:image/svg+xml;base64,%s' width='700' height='700' text-align='center'>" % board_svg
   ret += '<form action="/move"><input name="move" type="text"></input><input type="submit" value="Move"></form><br>'
+  ret += "<a href='/selfplay'>Play vs itself</a><br/>"
+  ret += "<script>$(function() { var input = document.getElementById('move'); console.log('selected'); input.focus(); input.select(); }); </script>"
   # ret += "<button onclick=\"$.post('/move', function() { location.reload(); });\">Make computer move</button>"
   return ret
 
