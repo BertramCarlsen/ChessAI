@@ -8,7 +8,7 @@ from torch import optim
 
 class ChessValueDataset(Dataset):
   def __init__(self):
-    dat = np.load("processed/dataset_100k.npz")
+    dat = np.load("processed/dataset_10M.npz")
     self.X = dat["arr_0"]
     self.Y = dat["arr_1"]
     print("Loaded", self.X.shape, self.Y.shape)
