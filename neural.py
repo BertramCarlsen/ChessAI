@@ -4,11 +4,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import optim
-import torch.utils.data.dataloader
+
 
 class ChessValueDataset(Dataset):
   def __init__(self):
-    dat = np.load("proccessed/dataset_100k.npz")
+    dat = np.load("processed/dataset_100k.npz")
     self.X = dat["arr_0"]
     self.Y = dat["arr_1"]
     print("Loaded", self.X.shape, self.Y.shape)
@@ -64,19 +64,22 @@ class Net(nn.Module):
     x = self.last(x)
 
     # Value output
-    return F.tanh(x)
+    return torch.tanh(x)
 
-chess_dataset = ChessValueDataset()
-train_loader = torch.utils.data.DataLoader(chess_dataset, batch_size=256, shuffle=True)
-model = Net()
-optimizer = optim.Adam(model.parameters())
-floss = nn.MSELoss()
+
 
 if __name__ == "__main__":
   device = "cuda"
+  
+
+  chess_dataset = ChessValueDataset()
+  train_loader = torch.utils.data.DataLoader(chess_dataset, batch_size=256, shuffle=True)
+  model = Net()
+  optimizer = optim.Adam(model.parameters())
+  floss = nn.MSELoss()
+
   if device == "cuda":
     model.cuda()
-
 
   model.train()
 
@@ -85,15 +88,16 @@ if __name__ == "__main__":
     num_loss = 0
     for batch_idx, (data, target) in enumerate(train_loader):
       target = target.unsqueeze(-1)
+      data, target = data.to(device), target.to(device)
       data = data.float()
       target = target.float()
-      data, target = data.to(device), target.to(device)
-      #print(data.shape, target.shape)
+      
       
       
       optimizer.zero_grad()
       output = model(data)
-      #print(output.shape)
+      # print(data.shape, target.shape)
+      # print(output.shape)
 
       loss = floss(output, target)
       loss.backward()

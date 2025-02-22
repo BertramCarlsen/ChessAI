@@ -5,7 +5,8 @@ import numpy as np
 
 def get_dataset(num_samples=None):
    # Import data
-   X, Y = [], []
+   X = np.array[X]
+   Y = np.array[Y]
    gn = 0
    values = {"1/2-1/2":0, "0-1":-1, "1-0":1}
    for fn in os.listdir("data"):
@@ -31,5 +32,5 @@ def get_dataset(num_samples=None):
          gn += 1
 
 if __name__ == "__main__":
-   X, Y = get_dataset(10000000)
-   np.savez("proccessed/dataset_10M.npz", X, Y)
+   X, Y = get_dataset(25000000)
+   np.savez("processed/dataset_25M.npz", X, Y)
