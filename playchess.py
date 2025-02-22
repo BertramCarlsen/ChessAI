@@ -1,10 +1,13 @@
 import torch
 from state import State
 from neural import Net
-from flask import Flask, Response
+from flask import Flask, Response, request
 import chess
 import chess.svg
 import time
+import os
+import traceback
+import base64
 
 class Valuator(object):
   def __init__(self):
@@ -55,8 +58,8 @@ def board():
 
 @app.route("/human")
 def move():
-  computer_move()
-  return ""
+  if not s.board.is_game_over():
+    request
 
 @app.route("/move", methods=["POST"])
 def move():
