@@ -228,7 +228,7 @@ def move_coordinates():
     # Debugging steps
     print("Current FEN:", s.board.fen())  
     print("Legal moves:", [m.uci() for m in s.board.legal_moves])
-    print(f"Attempting move: {move.uci()}")
+    
 
     if move is not None and move != "":
       print("human moves", move)
