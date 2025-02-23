@@ -69,14 +69,15 @@ class Net(nn.Module):
 
 
 if __name__ == "__main__":
+  # cpu or cuda
   device = "cuda"
   
 
   chess_dataset = ChessValueDataset()
   train_loader = torch.utils.data.DataLoader(chess_dataset, batch_size=256, shuffle=True)
   model = Net()
-  optimizer = optim.Adam(model.parameters())
-  floss = nn.MSELoss()
+  optimizer = optim.Adam(model.parameters(), lr=0.0001)
+  floss = nn.SmoothL1Loss()
 
   if device == "cuda":
     model.cuda()
