@@ -4,11 +4,13 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import optim
+import matplotlib.pyplot as plt
+import mpld3
 
 
 class ChessValueDataset(Dataset):
   def __init__(self):
-    dat = np.load("processed/dataset_10M.npz")
+    dat = np.load("processed/dataset_10K.npz")
     self.X = dat["arr_0"]
     self.Y = dat["arr_1"]
     print("Loaded", self.X.shape, self.Y.shape)
@@ -79,6 +81,8 @@ if __name__ == "__main__":
   optimizer = optim.Adam(model.parameters(), lr=0.0001)
   floss = nn.SmoothL1Loss()
 
+  loss_history = []
+
   if device == "cuda":
     model.cuda()
 
@@ -95,6 +99,7 @@ if __name__ == "__main__":
       
       
       
+      
       optimizer.zero_grad()
       output = model(data)
       # print(data.shape, target.shape)
@@ -106,5 +111,15 @@ if __name__ == "__main__":
       all_loss += loss.item()
       num_loss += 1
 
+    avg_loss  = all_loss / num_loss
+    loss_history.append(avg_loss)
     print("%3d: %f" % (epoch, all_loss/num_loss))
     torch.save(model.state_dict(), "nets/value.pth")
+
+  plt.figure(figsize=(10, 5))
+  plt.plot(loss_history, label="Training Loss", marker="o")
+  plt.xlabel("Epochs")
+  plt.ylabel("Loss")
+  plt.title("Neural Network Training Loss")
+  plt.legend()
+  mpld3.save_html(plt.gcf(), "static/loss_plot.html")
